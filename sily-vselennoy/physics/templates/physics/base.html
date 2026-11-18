@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Силы Вселенной — интерактивная энциклопедия физики">
+    <title>{% block title %}Силы Вселенной{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Optima:wght@300;400;500&family=Lato:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'physics/css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header class="site-header">
+        <a class="logo" href="{% url 'physics:home' %}">
+            СИЛЫ <span>ВСЕЛЕННОЙ</span>
+        </a>
+        <nav>
+            <a href="{% url 'physics:home' %}">Главная</a>
+            <a href="{% url 'physics:catalog' %}">Каталог</a>
+            <a href="{% url 'physics:catalog' %}#physics-models">Интерактив</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <p class="footer-mark">Силы Вселенной · Образовательный проект</p>
+            <p class="footer-meta">Механика · Молекулярная физика · Электричество · Оптика</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'physics/js/main.js' %}" defer></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
