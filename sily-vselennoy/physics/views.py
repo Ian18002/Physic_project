@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 from .models import Category, Force
 
@@ -31,10 +31,15 @@ def catalog(request):
     query = request.GET.get("q", "").strip()
     category_slug = request.GET.get("category", "")
 
-    if query:
-        forces = forces.filter(title__icontains=query)
     if category_slug:
         forces = forces.filter(category__slug=category_slug)
+    if query:
+        needle = query.casefold()
+        forces = [
+            force
+            for force in forces
+            if needle in force.title.casefold()
+        ]
 
     return render(
         request,
@@ -49,7 +54,10 @@ def catalog(request):
 
 
 def force_detail(request, slug):
-    force = Force.objects.filter(published=True).select_related("category").get(slug=slug)
+    force = get_object_or_404(
+        Force.objects.filter(published=True).select_related("category"),
+        slug=slug,
+    )
     examples = force.examples.all()
     problems = force.problems.all()
     return render(

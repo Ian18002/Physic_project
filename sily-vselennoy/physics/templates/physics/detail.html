@@ -1,0 +1,139 @@
+{% extends "physics/base.html" %}
+
+{% block title %}{{ force.title }} — Силы Вселенной{% endblock %}
+{% block body_class %}inner-page detail-page{% endblock %}
+
+{% block content %}
+<article class="lesson">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки">
+            <a href="{% url 'physics:home' %}">Главная</a>
+            <span aria-hidden="true">/</span>
+            <a href="{% url 'physics:catalog' %}">Каталог</a>
+            <span aria-hidden="true">/</span>
+            <span>{{ force.title }}</span>
+        </nav>
+
+        <header class="lesson-hero" data-reveal>
+            <p class="eyebrow">{{ force.category.name }}</p>
+            <h1 class="page-title">{{ force.title }}</h1>
+            <p class="page-lead">{{ force.definition|truncatewords:48 }}</p>
+        </header>
+
+        <div class="lesson-layout">
+            <div class="lesson-body">
+                <section class="lesson-section" data-reveal>
+                    <p class="section-label">01 · Определение</p>
+                    <div class="prose">{{ force.definition|linebreaks }}</div>
+                    {% if force.explanation %}
+                    <div class="prose">{{ force.explanation|linebreaks }}</div>
+                    {% endif %}
+                </section>
+
+                {% if force.applications %}
+                <section class="lesson-section" data-reveal>
+                    <p class="section-label">02 · Применение</p>
+                    <h2 class="display lesson-heading">Где это встречается в жизни</h2>
+                    <div class="prose">{{ force.applications|linebreaks }}</div>
+                </section>
+                {% endif %}
+
+                {% if examples %}
+                <section class="lesson-section" data-reveal>
+                    <p class="section-label">Примеры</p>
+                    <h2 class="display lesson-heading">Из реальной жизни</h2>
+                    <div class="example-grid">
+                        {% for example in examples %}
+                        <article class="example-card">
+                            <span class="example-card__index">{{ forloop.counter|stringformat:"02d" }}</span>
+                            <h3>{{ example.title }}</h3>
+                            <div class="prose">{{ example.description|linebreaks }}</div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                {% if problems %}
+                <section class="lesson-section" data-reveal>
+                    <p class="section-label">Практика</p>
+                    <h2 class="display lesson-heading">Задачи с решениями</h2>
+                    <div class="problem-list">
+                        {% for problem in problems %}
+                        <article class="problem">
+                            <span class="problem__index">{{ forloop.counter|stringformat:"02d" }}</span>
+                            <div class="problem__content">
+                                <h3>{{ problem.title }}</h3>
+                                <div class="prose">
+                                    <p><strong>Условие.</strong> {{ problem.condition|linebreaksbr }}</p>
+                                </div>
+                                {% if problem.solution or problem.answer %}
+                                <details class="problem__details">
+                                    <summary>
+                                        <span>Показать решение</span>
+                                        <span class="problem__toggle" aria-hidden="true">+</span>
+                                    </summary>
+                                    <div class="problem__solution">
+                                        {% if problem.solution %}
+                                        <div class="prose">{{ problem.solution|linebreaks }}</div>
+                                        {% endif %}
+                                        {% if problem.answer %}
+                                        <p class="problem__answer"><span>Ответ</span> {{ problem.answer }}</p>
+                                        {% endif %}
+                                    </div>
+                                </details>
+                                {% endif %}
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                {% if force.interesting_fact %}
+                <section class="fact-card" data-reveal>
+                    <p class="eyebrow">Интересный факт</p>
+                    <div class="prose">{{ force.interesting_fact|linebreaks }}</div>
+                </section>
+                {% endif %}
+
+                <a class="back-link" href="{% url 'physics:catalog' %}">
+                    <span aria-hidden="true">←</span> Вернуться в каталог
+                </a>
+            </div>
+
+            <aside class="lesson-aside" aria-label="Краткая информация">
+                {% if force.formula %}
+                <div class="formula-card" data-reveal>
+                    <p class="eyebrow">Формула</p>
+                    <p class="formula-card__formula">{{ force.formula }}</p>
+                    {% if force.formula_explanation %}
+                    <div class="formula-card__note">{{ force.formula_explanation|linebreaks }}</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="meta-card" data-reveal>
+                    <p class="eyebrow">Материал</p>
+                    <dl class="meta-list">
+                        <div>
+                            <dt>Раздел</dt>
+                            <dd>
+                                <a href="{% url 'physics:catalog' %}?category={{ force.category.slug|urlencode }}">
+                                    {{ force.category.name }}
+                                </a>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>Обновлено</dt>
+                            <dd>{{ force.updated_at|date:"d.m.Y" }}</dd>
+                        </div>
+                        <div>
+                            <dt>Формат</dt>
+                            <dd>Теория · примеры · задачи</dd>
+                        </div>
+                    </dl>
+                </div>
+            </aside>
+        </div>
+</article>
+{% endblock %}

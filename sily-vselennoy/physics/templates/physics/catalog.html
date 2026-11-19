@@ -1,0 +1,97 @@
+{% extends "physics/base.html" %}
+
+{% block title %}Каталог сил и законов — Силы Вселенной{% endblock %}
+{% block body_class %}inner-page catalog-page{% endblock %}
+
+{% block content %}
+    <header class="page-hero" data-reveal>
+        <nav class="breadcrumbs" aria-label="Хлебные крошки">
+            <a href="{% url 'physics:home' %}">Главная</a>
+            <span aria-hidden="true">/</span>
+            <span>Каталог</span>
+        </nav>
+        <p class="eyebrow">Библиотека знаний</p>
+        <h1 class="page-title">Каталог сил и законов</h1>
+        <p class="page-lead">
+            Механика, молекулярная физика, электричество и оптика.
+            Найдите тему по названию или выберите раздел — каждая страница
+            содержит теорию, формулу, примеры и задачи.
+        </p>
+    </header>
+
+    <section class="catalog-toolbar" aria-label="Поиск и фильтры" data-reveal>
+        <form class="search-form" method="get" action="{% url 'physics:catalog' %}" role="search">
+            <div class="search-field">
+                <svg class="search-field__icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="6.5"></circle>
+                    <path d="M15.8 15.8 21 21"></path>
+                </svg>
+                <label class="sr-only" for="catalog-search">Поиск по каталогу</label>
+                <input
+                    id="catalog-search"
+                    type="search"
+                    name="q"
+                    value="{{ query }}"
+                    placeholder="Например, сила трения"
+                    autocomplete="off"
+                >
+            </div>
+            {% if selected_category %}
+            <input type="hidden" name="category" value="{{ selected_category }}">
+            {% endif %}
+            <button class="solid-button" type="submit">Найти</button>
+        </form>
+
+        <div class="filter-row">
+            <a class="filter-pill{% if not selected_category %} is-active{% endif %}"
+               href="{% url 'physics:catalog' %}{% if query %}?q={{ query|urlencode }}{% endif %}">
+                Все темы
+            </a>
+            {% for category in categories %}
+            <a class="filter-pill{% if selected_category == category.slug %} is-active{% endif %}"
+               href="{% url 'physics:catalog' %}?category={{ category.slug|urlencode }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+
+        <p class="results-meta">
+            {% if query or selected_category %}
+            Найдено материалов: {{ forces|length }}
+            {% else %}
+            В библиотеке материалов: {{ forces|length }}
+            {% endif %}
+        </p>
+    </section>
+
+    {% if forces %}
+    <div class="object-grid object-grid--catalog">
+        {% for force in forces %}
+        <a class="object-card" href="{% url 'physics:detail' force.slug %}" data-reveal>
+            <div class="object-card__media">
+                <span class="object-card__index">{{ forloop.counter|stringformat:"02d" }}</span>
+                <span class="object-card__object" aria-hidden="true"><span></span></span>
+                {% if force.formula %}
+                <span class="object-card__formula">{{ force.formula|truncatechars:24 }}</span>
+                {% endif %}
+            </div>
+            <div class="object-card__caption">
+                <span class="object-card__category">{{ force.category.name }}</span>
+                <h2>{{ force.title }}</h2>
+                <span class="object-card__cta">Изучить <span aria-hidden="true">→</span></span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state" data-reveal>
+        <p class="eyebrow">Ничего не найдено</p>
+        <h2 class="display">В библиотеке пока нет подходящих материалов</h2>
+        <p>
+            Попробуйте изменить запрос или выбрать другой раздел.
+            Новые темы появляются здесь сразу после публикации в кабинете учителя.
+        </p>
+        <a class="underlined-link" href="{% url 'physics:catalog' %}">Сбросить фильтры</a>
+    </div>
+    {% endif %}
+{% endblock %}

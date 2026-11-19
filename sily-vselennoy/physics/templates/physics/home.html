@@ -1,0 +1,192 @@
+{% extends "physics/base.html" %}
+{% load static %}
+
+{% block title %}Силы Вселенной — физика, которую можно увидеть{% endblock %}
+{% block body_class %}home-page{% endblock %}
+{% block main_class %}{% endblock %}
+
+{% block content %}
+<section class="home-hero" id="hero">
+    <div class="planet-stage"
+         aria-hidden="true"
+         data-earth-day="{% static 'physics/images/earth-day.jpg' %}"
+         data-earth-specular="{% static 'physics/images/earth-specular.jpg' %}"
+         data-earth-clouds="{% static 'physics/images/earth-clouds.png' %}">
+        <div class="planet-fallback"></div>
+        <canvas id="earth-canvas"></canvas>
+    </div>
+    <div class="hero-scrim" aria-hidden="true"></div>
+
+    <div class="hero-content" data-reveal>
+        <p class="eyebrow eyebrow--frost">Интерактивная энциклопедия физики</p>
+        <h1 class="display hero-title">Вселенная движется<br>по законам физики</h1>
+        <p class="hero-lead">
+            Исследуйте силы, которые управляют движением, взаимодействием тел
+            и устройством окружающего мира. Теория, формулы и задачи — в одном месте.
+        </p>
+        <div class="hero-actions">
+            <a class="film-pill" href="{% url 'physics:catalog' %}">
+                Исследовать силы <span aria-hidden="true">→</span>
+            </a>
+            <a class="underlined-link underlined-link--light" href="#about">О проекте</a>
+        </div>
+    </div>
+
+    <div class="hero-meta" aria-hidden="true">
+        <span>01 · Планета Земля</span>
+        <span>Процедурная 3D-модель</span>
+    </div>
+
+    <a class="hero-scroll" href="#collections">
+        <span class="hero-scroll__label">Листайте вниз</span>
+        <span class="hero-scroll__line" aria-hidden="true"></span>
+    </a>
+</section>
+
+<section class="paper-section category-rail" id="collections">
+    <div class="section-inner">
+        <div class="section-head" data-reveal>
+            <div>
+                <p class="eyebrow">Разделы физики</p>
+                <h2 class="display section-title">Выберите область знаний</h2>
+            </div>
+            <a class="underlined-link" href="{% url 'physics:catalog' %}">Все материалы</a>
+        </div>
+
+        <div class="category-rail__grid">
+            {% for category in categories %}
+            <a class="category-tile" href="{% url 'physics:catalog' %}?category={{ category.slug|urlencode }}" data-reveal>
+                <span class="category-tile__object">
+                    <span class="category-orb"></span>
+                    <span class="category-orbit" aria-hidden="true"></span>
+                </span>
+                <span class="category-tile__label">{{ category.name }}</span>
+                <span class="category-tile__caption">{{ category.description|default:"Раздел физики"|truncatechars:48 }}</span>
+            </a>
+            {% empty %}
+            <a class="category-tile" href="{% url 'physics:catalog' %}" data-reveal>
+                <span class="category-tile__object">
+                    <span class="category-orb"></span>
+                    <span class="category-orbit" aria-hidden="true"></span>
+                </span>
+                <span class="category-tile__label">Механика</span>
+                <span class="category-tile__caption">Движение и силы</span>
+            </a>
+            <a class="category-tile" href="{% url 'physics:catalog' %}" data-reveal>
+                <span class="category-tile__object">
+                    <span class="category-orb"></span>
+                    <span class="category-orbit" aria-hidden="true"></span>
+                </span>
+                <span class="category-tile__label">Молекулярная физика</span>
+                <span class="category-tile__caption">Теплота и вещество</span>
+            </a>
+            <a class="category-tile" href="{% url 'physics:catalog' %}" data-reveal>
+                <span class="category-tile__object">
+                    <span class="category-orb"></span>
+                    <span class="category-orbit" aria-hidden="true"></span>
+                </span>
+                <span class="category-tile__label">Электричество</span>
+                <span class="category-tile__caption">Заряд и ток</span>
+            </a>
+            <a class="category-tile" href="{% url 'physics:catalog' %}" data-reveal>
+                <span class="category-tile__object">
+                    <span class="category-orb"></span>
+                    <span class="category-orbit" aria-hidden="true"></span>
+                </span>
+                <span class="category-tile__label">Оптика</span>
+                <span class="category-tile__caption">Свет и линзы</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="paper-section collection">
+    <div class="section-inner">
+        <div class="section-head" data-reveal>
+            <div>
+                <p class="eyebrow">Из библиотеки</p>
+                <h2 class="display section-title">Силы и законы</h2>
+            </div>
+            <a class="underlined-link" href="{% url 'physics:catalog' %}">Смотреть каталог</a>
+        </div>
+
+        <div class="object-grid">
+            {% for force in forces %}
+            <a class="object-card" href="{% url 'physics:detail' force.slug %}" data-reveal>
+                <div class="object-card__media">
+                    <span class="object-card__index">{{ forloop.counter|stringformat:"02d" }}</span>
+                    <span class="object-card__object" aria-hidden="true"><span></span></span>
+                    {% if force.formula %}
+                    <span class="object-card__formula">{{ force.formula|truncatechars:24 }}</span>
+                    {% endif %}
+                </div>
+                <div class="object-card__caption">
+                    <span class="object-card__category">{{ force.category.name }}</span>
+                    <h3>{{ force.title }}</h3>
+                    <span class="object-card__cta">Изучить <span aria-hidden="true">→</span></span>
+                </div>
+            </a>
+            {% empty %}
+            <div class="collection-empty" data-reveal>
+                <p class="eyebrow">Коллекция пополняется</p>
+                <h3 class="display">Первые материалы скоро появятся</h3>
+                <p>Каталог уже готов. Учитель может добавить силу или закон через кабинет — и тема сразу появится на сайте.</p>
+                <a class="underlined-link" href="{% url 'physics:catalog' %}">Открыть каталог</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="editorial-band" id="about">
+    <div class="editorial-band__media" aria-hidden="true">
+        <span class="editorial-band__formula">F = ma</span>
+        <span class="editorial-band__ring"></span>
+        <span class="editorial-band__caption">MECHANICA · 1687</span>
+    </div>
+    <div class="editorial-band__text" data-reveal>
+        <p class="eyebrow eyebrow--frost">О проекте</p>
+        <h2 class="display">Физика — язык, на котором говорит Вселенная</h2>
+        <p class="editorial-band__lead">
+            «Силы Вселенной» — школьная энциклопедия, где теория встречается
+            с наглядностью. Читайте объяснения, разбирайте формулы, изучайте
+            примеры из жизни и проверяйте себя задачами с решениями.
+        </p>
+        <a class="underlined-link underlined-link--light" href="{% url 'physics:catalog' %}">Открыть библиотеку</a>
+    </div>
+</section>
+
+<section class="paper-section principles">
+    <div class="section-inner">
+        <div class="principles-grid">
+            <article class="principle" data-reveal>
+                <span class="principle__index">01</span>
+                <h3>Понятная теория</h3>
+                <p>Короткие объяснения без лишней сложности: от определения к формуле и смыслу явления.</p>
+            </article>
+            <article class="principle" data-reveal>
+                <span class="principle__index">02</span>
+                <h3>Формулы и примеры</h3>
+                <p>Каждая формула расшифрована, а применение силы показано на знакомых ситуациях.</p>
+            </article>
+            <article class="principle" data-reveal>
+                <span class="principle__index">03</span>
+                <h3>Задачи с решениями</h3>
+                <p>Условие, ход решения и ответ — можно разобраться самостоятельно в удобном темпе.</p>
+            </article>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="importmap">
+{
+    "imports": {
+        "three": "{% static 'physics/js/three.module.min.js' %}"
+    }
+}
+</script>
+<script type="module" src="{% static 'physics/js/planet.js' %}"></script>
+{% endblock %}

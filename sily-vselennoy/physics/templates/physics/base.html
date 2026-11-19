@@ -4,34 +4,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Силы Вселенной — интерактивная энциклопедия физики">
+    <meta name="description" content="Силы Вселенной — интерактивная энциклопедия физики для школьников и учителей.">
     <title>{% block title %}Силы Вселенной{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'physics/images/favicon.svg' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Optima:wght@300;400;500&family=Lato:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Marcellus&family=Playfair+Display:ital,wght@1,400&family=Source+Serif+4:opsz,wght@8..60,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'physics/css/style.css' %}">
+    <script>document.documentElement.classList.add("js");</script>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}">
-    <header class="site-header">
-        <a class="logo" href="{% url 'physics:home' %}">
-            СИЛЫ <span>ВСЕЛЕННОЙ</span>
-        </a>
-        <nav>
+<body id="top" class="{% block body_class %}{% endblock %}">
+    <a class="skip-link" href="#main">Перейти к содержанию</a>
+
+    <header class="site-header" id="site-header">
+        <nav class="site-nav" aria-label="Основная навигация">
             <a href="{% url 'physics:home' %}">Главная</a>
             <a href="{% url 'physics:catalog' %}">Каталог</a>
-            <a href="{% url 'physics:catalog' %}#physics-models">Интерактив</a>
         </nav>
+
+        <a class="logo" href="{% url 'physics:home' %}" aria-label="Силы Вселенной — на главную">
+            <span>Силы</span><i aria-hidden="true"></i><span>Вселенной</span>
+        </a>
+
+        <div class="header-tools">
+            <a class="header-link header-link--about" href="{% url 'physics:home' %}#about">О проекте</a>
+            <a class="header-link" href="{% url 'admin:index' %}">Кабинет</a>
+        </div>
     </header>
 
-    <main class="container">
+    <main id="main" class="{% block main_class %}page-shell{% endblock %}">
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" id="site-footer">
         <div class="footer-inner">
-            <p class="footer-mark">Силы Вселенной · Образовательный проект</p>
-            <p class="footer-meta">Механика · Молекулярная физика · Электричество · Оптика</p>
+            <div class="footer-top">
+                <a class="footer-pill" href="{% url 'physics:catalog' %}">Библиотека сил</a>
+                <a class="footer-top-link" href="#top">Наверх <span aria-hidden="true">↑</span></a>
+            </div>
+
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a class="footer-wordmark" href="{% url 'physics:home' %}">Силы<br>Вселенной</a>
+                    <p class="footer-note">Школьная энциклопедия физики: теория, формулы, примеры и задачи с решениями.</p>
+                </div>
+
+                <nav class="footer-links" aria-label="Разделы сайта">
+                    <a href="{% url 'physics:home' %}">Главная</a>
+                    <a href="{% url 'physics:catalog' %}">Каталог</a>
+                    <a href="{% url 'physics:home' %}#about">О проекте</a>
+                    <a href="{% url 'admin:index' %}">Кабинет учителя</a>
+                </nav>
+            </div>
+
+            <div class="footer-bottom">
+                <span>Физика вокруг нас · Образовательный проект</span>
+                <span>Механика · Молекулярная физика · Электричество · Оптика</span>
+            </div>
         </div>
     </footer>
 
